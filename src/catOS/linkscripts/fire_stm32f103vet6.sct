@@ -1,0 +1,22 @@
+; * file fire_stm32f103vet6.sct
+; * brief 
+; * author amoigus (648137125@qq.com)
+; * version 0.1
+; * date 2021-06-06
+
+
+LR_IROM1 0x08000000 0x00080000  {    ; load region size_region
+  ER_IROM1 0x08000000 0x00080000  {  ; load address = execution address
+   *.o (RESET, +First)
+   *(InRoot$$Sections)
+   .ANY (+RO)
+   .ANY (cat_shell_cmd)
+  }
+  RW_IRAM1 0x20000000 0x0001000  {  ; RW data
+   .ANY (cat_shell_cmd)
+  }
+  RW_IRAM2 0x20001000 0x0009000  {  ; RW data
+   .ANY (+RW +ZI)
+  }
+}
+

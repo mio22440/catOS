@@ -1,0 +1,78 @@
+/**
+ * file fire_stm32f103vet6.sct
+ * brief 
+ * author amoigus (648137125@qq.com)
+ * version 0.1
+ * date 2021-06-20
+ */
+
+ENTRY(Reset_Handler)
+MEMORY
+{  
+	rom(rx)  :  org = 0x08000000,  len = 512K
+	ram(rwx)  :  org = 0x20000000,  len = 64K
+}
+
+SECTIONS
+{
+	.text :
+	{
+		* (.text)
+		* (.init.text)
+		* (.rodata*)
+		. = ALIGN(4);
+	}>rom 
+	text_end = .;
+
+	.data : AT( text_end ){
+		data_start = .;
+		* (.vector)
+
+		. = ALIGN(4);
+		*(.cat_shell_cmd)
+
+		. = ALIGN(4);
+	       	* (.data)
+		*(.data.rel)
+		*(.got)
+		*(.got.plt)
+	}>ram 
+	data_end = .;
+	
+	.bss ALIGN(4):
+	{ 
+		bss_start = .;
+		* (.bss*)
+     		. = ALIGN(4) ;
+	}>ram
+	bss_end = .;    
+	
+	stack_base = 0x20005000 - 4;
+	Msp_size   =  0x200;      
+	Psp_size   =  0x200;    
+
+	Msp_stack        =  stack_base; 
+	Psp_stack        =  Msp_stack   - Msp_size;  
+
+	heap_start = (bss_end + 3)&( ~ 3);  
+	heap_end = Psp_stack - Psp_size;
+}  
+
+
+/*
+LR_IROM1 0x08000000 0x00080000  {    @ load region size_region
+  ER_IROM1 0x08000000 0x00080000  {  @ load address = execution address
+   *.o (RESET, +First)
+   *(InRoot$$Sections)
+   .ANY (+RO)
+   .ANY (cat_shell_cmd)
+  }
+  RW_IRAM1 0x20000000 0x0001000  {  @ RW data
+   .ANY (cat_shell_cmd)
+  }
+  RW_IRAM2 0x20001000 0x0009000  {  @ RW data
+   .ANY (+RW +ZI)
+  }
+}
+*/
+
