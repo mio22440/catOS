@@ -29,10 +29,7 @@ typedef short int       int16_t;
 
 typedef unsigned char           uint8_t;
 typedef unsigned short int      uint16_t;
-
-#if defined(__CC_ARM)
-    typedef unsigned int            uint32_t;
-#endif
+typedef unsigned int            uint32_t;
 
 typedef uint32_t cat_stack_type_t;       //stack type(the default stack wide of stm32 is 32)
 //typedef void (*cat_task_entry_t)(void *);   //pointer type of user defined task entry function
