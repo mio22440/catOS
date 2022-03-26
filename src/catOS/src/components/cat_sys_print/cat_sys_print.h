@@ -51,6 +51,11 @@
             do{printf(_fmt, ##__VA_ARGS__);fflush(stdout);}while(0)
     #endif
 
+    #if 1
+        #define DEBUG_PRINTF(_fmt, ...) \
+            cat_printf(_fmt, ##__VA_ARGS__)
+    #endif
+
     #define CAT_SYS_SCANF(_fmt, ...) \
         cat_scanf(_fmt, ##__VA_ARGS__)
 
