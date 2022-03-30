@@ -12,6 +12,8 @@ CINCLUDE_FILE += catOS/src/drivers/uart
 ifeq (CATOS_USE_CM_BACKTRACE, y)
 	CINCLUDE_FILE += catOS/src/third_party/cm_backtrace
 endif
+CINCLUDE_FILE += catOS/src/schedule
+CINCLUDE_FILE += catOS/src/schedule/edf
 
 CINCLUDE_FILE += catOS/Libraries/CMSIS/Include
 CINCLUDE_FILE += catOS/Libraries/CMSIS/Device/ST/STM32F1xx/Include

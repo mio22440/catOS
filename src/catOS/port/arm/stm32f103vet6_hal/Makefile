@@ -8,6 +8,9 @@ CINCLUDE_FILE += catOS/Libraries/STM32F1xx_HAL_Driver/Inc
 CINCLUDE_FILE += catOS/include
 CINCLUDE_FILE += catOS/user
 
+CINCLUDE_FILE += catOS/src/schedule
+CINCLUDE_FILE += catOS/src/schedule/edf
+
 
 
 obj-y += port_asm.o

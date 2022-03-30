@@ -20,13 +20,15 @@
 #include "catos_defs.h"
 #include "catos_config.h"
 
+#include "strategy.h"
+#include "edf.h"
+
 #define CATOS_TASK_STATE_RDY        0               //目前不具备判断功能
 #define CATOS_TASK_STATE_DESTROYED  (1 << 1)        //删除
 #define CATOS_TASK_STATE_DELAYED    (1 << 2)        //延时
 #define CATOS_TASK_STATE_SUSPEND    (1 << 3)        //挂起
 
 #define CATOS_TASK_EVENT_MASK       (0xff << 16)    //高16位用作事件相关的状态
-
 
 
 extern void cat_set_systick_period(uint32_t ms);//初始化中断
@@ -51,12 +53,14 @@ struct _cat_TCB_t
     struct _cat_node_t  link_node;                      /**< 任务表中的链表节点*/
     uint32_t            task_delay;                     /**< soft delay timer(number of systemticks)*/
     struct _cat_node_t  delay_node;                     /**< */
+
     uint32_t            state;                          /**< */
+
     uint8_t             prio;                           /**< priority of task*/
     uint32_t            slice;                          /**< 时间片(剩余时间)*/
     uint32_t            suspend_cnt;                    /**< 被挂起的次数*/
     
-    void                (*clean_cbk)(void *arg);        /**< 资源清理函数*/
+    void                (*clean_cbk)(void *);        /**< 资源清理函数*/
     void                *clean_arg;                     /**< 资源清理函数的参数*/
     uint8_t             req_delete_flag;                /**< 请求删除该任务标志*/
 
@@ -69,6 +73,19 @@ struct _cat_TCB_t
 
     uint8_t             *task_name;                     /**< 任务名称*/
     uint32_t            sched_times;                    /**< 调度次数*/
+
+    uint32_t            sched_strategy;                 /**< 调度策略*/
+
+ #ifdef USE_EDF_SCHED
+    /** EDF 相关 */
+    void                (*user_func)(void *);           /**< 用户函数*/
+    uint32_t            period;                         /**< 周期*/
+    uint32_t            next_arrive;                    /**< 距离下一次到达剩余的tick数*/
+    uint32_t            deadline;                       /**< 距离本次截止时间的tick数*/
+
+    uint32_t            exec_time;                      /**< 任务每周期执行需要的tick数*/
+    uint32_t            left_exec_time;                 /**< 距离本周期执行结束剩余的tick数*/
+#endif
     
     //uint8_t              task_name[CATOS_MAX_TASK_NAME_LEN];  /**< name of stack*/
 };
@@ -121,7 +138,8 @@ void task_init(
     void *arg, 
     uint8_t prio, 
     cat_stack_type_t *stack_start_addr,
-    uint32_t stack_size
+    uint32_t stack_size,
+    uint32_t sched_strategy
 );
 
 

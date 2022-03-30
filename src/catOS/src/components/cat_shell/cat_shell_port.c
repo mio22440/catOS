@@ -53,7 +53,16 @@ void cat_shell_task_init(void)
         while(1);
     }
 
-    task_init("shell_task", &shell_task, cat_shell_task_entry, NULL, CATOS_SHELL_TASK_PRIO, shell_task_env, CATOS_SHELL_STACK_SIZE);
+    task_init(
+        "shell_task", 
+        &shell_task, 
+        cat_shell_task_entry, 
+        NULL, 
+        CATOS_SHELL_TASK_PRIO, 
+        shell_task_env, 
+        CATOS_SHELL_STACK_SIZE,
+        SCHED_STRATEGY_PRIO
+    );
     CAT_SYS_PRINTF("[cat_shell_port] cat_shell init success \r\n");
 }
 

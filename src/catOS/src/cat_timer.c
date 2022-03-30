@@ -106,7 +106,16 @@ void cat_timer_task_init(void)
 #if CATOS_TIMERTASK_PRIO >= (CATOS_MAX_TASK_PRIO - 1)
     #error "priority of timer task must be higher than idle task"
 #endif
-    task_init("timer_task", &cat_timer_task, cat_timer_soft_task, NULL, CATOS_TIMERTASK_PRIO, cat_timer_task_stack, CATOS_TIMERTASK_STACK_SIZE);
+    task_init(
+        "timer_task", 
+        &cat_timer_task, 
+        cat_timer_soft_task, 
+        NULL, 
+        CATOS_TIMERTASK_PRIO, 
+        cat_timer_task_stack, 
+        CATOS_TIMERTASK_STACK_SIZE,
+        SCHED_STRATEGY_PRIO    
+    );
 }
 
 void cat_timer_init(

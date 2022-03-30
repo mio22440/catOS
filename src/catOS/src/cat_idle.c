@@ -44,7 +44,16 @@ extern struct _cat_TCB_t *cat_idle_task;
 
 void cat_idle_task_init(void)
 {
-    task_init("idle_task", &idle_task, cat_idle_entry, NULL, CATOS_MAX_TASK_PRIO - 1, idle_task_env, CATOS_IDLE_STACK_SIZE);
+    task_init(
+        "idle_task",
+        &idle_task,
+        cat_idle_entry,
+        NULL,
+        CATOS_MAX_TASK_PRIO - 1,
+        idle_task_env,
+        CATOS_IDLE_STACK_SIZE,
+        SCHED_STRATEGY_PRIO
+    );
     cat_idle_task = &idle_task;
 }
 

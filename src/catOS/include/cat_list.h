@@ -22,7 +22,7 @@
 #define FIRST_NODE head_node.next_node
 #define LAST_NODE  head_node.pre_node
 
-#define NODE_PARENT(node, parent, name) (parent *)((uint32_t)node - (uint32_t)&((parent *)0)->name)
+#define NODE_PARENT(node, parent, name) ((parent *)((uint32_t)node - (uint32_t)&((parent *)0)->name))
 
 
 struct _cat_node_t

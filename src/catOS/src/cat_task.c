@@ -41,7 +41,8 @@ void task_init(
     void *arg, 
     uint8_t prio, 
     cat_stack_type_t *stack_start_addr,
-    uint32_t stack_size
+    uint32_t stack_size,
+    uint32_t sched_strategy
 )
 {
     uint32_t *stack_top;
@@ -88,10 +89,16 @@ void task_init(
     task->task_name = task_name;
     task->sched_times = 0;
 
+    task->sched_strategy = sched_strategy;
+
     cat_node_init(&(task->delay_node));
     cat_node_init(&(task->link_node));
 
-    cat_task_sched_rdy(task);//将任务挂到就绪表
+    if(SCHED_STRATEGY_PRIO == task->sched_strategy)
+    {
+        cat_task_sched_rdy(task);//将任务挂到就绪表
+    }
+    
 
 #if (CATOS_ENABLE_TASK_STAT == 1)
     if(cat_task_num < CATOS_TASK_STAT_MAX_TASK)

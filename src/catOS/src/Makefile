@@ -7,8 +7,11 @@ CINCLUDE_FILE += catOS/Libraries/STM32F1xx_HAL_Driver/Inc
 
 CINCLUDE_FILE += catOS/include
 CINCLUDE_FILE += catOS/user
+
 CINCLUDE_FILE += catOS/src/components/cat_shell
 CINCLUDE_FILE += catOS/src/components/cat_sys_print
+CINCLUDE_FILE += catOS/src/schedule
+CINCLUDE_FILE += catOS/src/schedule/edf
 
 CINCLUDE_FILE += catOS/port/arm/stm32f103vet6_hal
 
@@ -16,6 +19,7 @@ subdir-y += components
 subdir-y += drivers
 subdir-y += support
 subdir-y += third_party
+subdir-y += schedule
 
 obj-y += cat_event.o
 obj-$(CATOS_USE_FLAG_GROUP) += cat_flag_group.o

@@ -15,6 +15,8 @@
 #include "catos.h"
 #include "app.h"
 
+#include "strategy.h"
+
 extern struct _cat_list_t task_tbl[CATOS_MAX_TASK_PRIO];//任务表    from cat_task.c
 extern struct _cat_list_t cat_task_delayed_list;//延时链表          from cat_time.c
 
@@ -105,6 +107,19 @@ void cat_task_systemtick_handler(void)
     cat_hooks_systick();
 #endif
 	
-    //进行一次调度
-    cat_task_sched();
+
+#ifdef USE_EDF_SCHED
+    uint8_t edf_got_task = 0;
+    edf_got_task = edf_sched();
+
+    /* 如果edf没有需要执行的任务则调度优先级任务 */
+    if(0 != edf_got_task)
+    {
+#endif
+        //进行一次调度
+        cat_task_sched();
+#ifdef USE_EDF_SCHED
+    }
+#endif
+
 }
