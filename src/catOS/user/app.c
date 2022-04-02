@@ -10,17 +10,21 @@
 #endif //#if (CATOS_ENABLE_SYS_PRINT == 1)
 
 #ifdef USER_USE_CM_BACKTRACE
-#include "cm_backtrace.h"
+  #include "cm_backtrace.h"
 #endif
 
-#include "edf.h"
+#if (USE_EDF_SCHED == 1)
+  #include "edf.h"
+#endif
 
 __attribute__((section("app_region")))
 struct _cat_TCB_t task1;
 
+#if (USE_EDF_SCHED == 1)
 edf_task_t task2;
 edf_task_t task3;
 edf_task_t task4;
+#endif
 
 cat_stack_type_t task1_env[1024];
 cat_stack_type_t task2_env[1024];
@@ -39,6 +43,7 @@ uint8_t uart_buf[128] = "test";
 int task1_flag;
 void task1_entry(void *arg)
 {
+    uint32_t status = cat_task_enter_critical();
 	  board_led_init();
 #if 0
     cat_uart_init();
@@ -48,6 +53,7 @@ void task1_entry(void *arg)
 #endif //#if 0
 		cat_uart_transmit("testing...\r\n", 12);
     CAT_SYS_PRINTF("%d testing CAT_SYS_PRINTF\r\n", 1);
+    cat_task_exit_critical(status);
     for(;;)
     {
       sched_task1_times++;
@@ -69,18 +75,7 @@ void task2_entry(void *arg)
 int task3_flag;
 void task3_entry(void *arg)
 {
-
-    for(;;)
-    {
-			//cat_bsp_uart_transmit("task3_flag_1->0\n", 16);
-      sched_task3_times++;
-        task3_flag = 0;
-        cat_task_delay(100);
-			
-			//cat_bsp_uart_transmit("task3_flag_0->1\n", 16);
-        task3_flag = 1;
-        cat_task_delay(100);
-    }
+    CAT_SYS_PRINTF("task3 running...\r\n");
 }
 
 int task4_flag;
@@ -114,6 +109,7 @@ void cat_user_tasks_init(void)
       SCHED_STRATEGY_PRIO
     );
 
+#if (USE_EDF_SCHED == 1)
     edf_create_task(
       "task2_edf",
       &task2,
@@ -121,6 +117,18 @@ void cat_user_tasks_init(void)
       NULL,
       task2_env,
       sizeof(task2_env),
-      10
+      100
     );
+
+    edf_create_task(
+      "task3_edf",
+      &task3,
+      task3_entry,
+      NULL,
+      task3_env,
+      sizeof(task3_env),
+      200
+    );
+#endif
+
 }

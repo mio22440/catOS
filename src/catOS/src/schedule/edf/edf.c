@@ -47,7 +47,7 @@ void edf_create_task(
 )
 {
     tcb->period         = period;
-    tcb->next_arrive    = period;
+    tcb->next_arrive    = period+1;
     tcb->deadline       = period;
 
     tcb->exec_time      = 0;        //执行时间在第一次执行时获取
@@ -151,18 +151,18 @@ edf_task_t *edf_get_highest(void)
         NODE_PARENT(tmp_node, edf_task_t, link_node)->deadline--;
         NODE_PARENT(tmp_node, edf_task_t, link_node)->next_arrive--;
         
-        //如果剩余执行时间为零
-        if(0 == NODE_PARENT(tmp_node, edf_task_t, link_node)->left_exec_time)
-        {
-            next_rdy = NODE_PARENT(tmp_node, edf_task_t, link_node)->link_node.next_node;
+        // //如果剩余执行时间为零
+        // if(0 == NODE_PARENT(tmp_node, edf_task_t, link_node)->left_exec_time)
+        // {
+        //     next_rdy = NODE_PARENT(tmp_node, edf_task_t, link_node)->link_node.next_node;
 
-            NODE_PARENT(tmp_node, edf_task_t, link_node)->deadline = NODE_PARENT(tmp_node, edf_task_t, link_node)->period;
-            edf_wait_next_arrive(NODE_PARENT(tmp_node, edf_task_t, link_node));
+        //     NODE_PARENT(tmp_node, edf_task_t, link_node)->deadline = NODE_PARENT(tmp_node, edf_task_t, link_node)->period;
+        //     edf_wait_next_arrive(NODE_PARENT(tmp_node, edf_task_t, link_node));
 
-            tmp_node = next_rdy;//将tmp_task移动到下一个就绪的任务上
-        }
-        else
-        {
+        //     tmp_node = next_rdy;//将tmp_task移动到下一个就绪的任务上
+        // }
+        // else
+        // {
             if(
                 (NULL == ret) ||
                 (NODE_PARENT(tmp_node, edf_task_t, link_node)->deadline < ret->deadline)
@@ -172,7 +172,7 @@ edf_task_t *edf_get_highest(void)
             }
 
             tmp_node = tmp_node->next_node;
-        }
+        // }
     }
 
     return ret;
@@ -186,6 +186,9 @@ edf_task_t *edf_get_highest(void)
 void edf_wait_next_arrive(edf_task_t *task)
 {
     edf_task_remove_from_list(task);
+
+    //置位EDF等待位
+    task->state |= CATOS_TASK_STATE_EDFWAIT;
 
     //todo: 计算任务距离下次到达还有多少时间，赋值给next_arrive
     //因为在每次调度都处理了下次到达时间，这里就不用处理了
@@ -212,6 +215,9 @@ void edf_deal_wait_list(void)
             next_wait = tmp_node->next_node;//如果这里不用额外指针rdy_task, tmp_task指针会跑到就绪链表中去
             edf_task_remove_from_list(task);
 
+            //复位EDF等待位
+            task->state &= ~CATOS_TASK_STATE_EDFWAIT;
+
             task->deadline    = task->period;
             task->next_arrive = task->period;
 
@@ -237,8 +243,19 @@ void edf_deal_wait_list(void)
  */
 void edf_infinite_call(void)
 {
-    cat_current_task->user_func(NULL);      //调用用户函数
-    edf_wait_next_arrive(cat_current_task); //等待下一次到达
+    uint32_t status;
+
+    while(1)
+    {
+        if(!(cat_current_task->state & CATOS_TASK_STATE_EDFWAIT))
+        {
+            cat_current_task->user_func(NULL);      //调用用户函数
+
+            status = cat_task_enter_critical();
+            edf_wait_next_arrive(cat_current_task); //等待下一次到达
+            cat_task_exit_critical(status);
+        }
+    }
 }
 
 /* pri funcs end ***/

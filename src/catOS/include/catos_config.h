@@ -37,6 +37,9 @@
 #define CATOS_RDY_TBL_LEN           ((CATOS_MAX_TASK_PRIO + 7) >> 3) /**< raw number of ready table(align 8)*/
 #define CATOS_RDY_GRP_LEN           ((CATOS_RDY_TBL_LEN + 7) >> 3)
 
+
+//#define USE_EDF_SCHED               0   /**< 使用EDF调度*/
+
 /** 裁剪 **/
 
 #define CATOS_ENABLE_SEM            1

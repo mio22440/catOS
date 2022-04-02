@@ -97,6 +97,7 @@ SECTIONS
     *(.data)           /* .data sections */
     *(.data*)          /* .data* sections */
 
+    . = ALIGN(4);
     PROVIDE_HIDDEN (cat_shell_cmd_start = .);
     KEEP (*(cat_shell_cmd))
     PROVIDE_HIDDEN (cat_shell_cmd_end = .);

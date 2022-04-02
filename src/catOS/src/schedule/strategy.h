@@ -12,6 +12,10 @@
 #ifndef STRATEGY_H
 #define STRATEGY_H
 
+#if (USE_EDF_SCHED == 1)
+    #include "edf.h"
+#endif
+
 #define SCHED_STRATEGY_PRIO         0
 #define SCHED_STRATEGY_EDF          (1 << 1)        /**< EDF调度*/
 

@@ -32,6 +32,10 @@ void catos_init(void)
     cat_task_sched_init();
     cat_task_delayed_init();
 
+ #if (USE_EDF_SCHED == 1)
+    edf_init();
+#endif
+
 //定时器模块初始化
 #if (CATOS_ENABLE_TIMER == 1)
     cat_timer_module_init();
@@ -108,17 +112,23 @@ void cat_task_systemtick_handler(void)
 #endif
 	
 
-#ifdef USE_EDF_SCHED
+#if (USE_EDF_SCHED == 1)
     uint8_t edf_got_task = 0;
-    edf_got_task = edf_sched();
+    if(catos_ticks >= 100)
+    {
+        edf_got_task = edf_sched();
+    }
+    
 
     /* 如果edf没有需要执行的任务则调度优先级任务 */
-    if(0 != edf_got_task)
+
+    /* 如果tick小于100或者没有EDF任务需要调度 */
+    if(catos_ticks < 100 || 0 != edf_got_task)
     {
 #endif
         //进行一次调度
         cat_task_sched();
-#ifdef USE_EDF_SCHED
+#if (USE_EDF_SCHED == 1)
     }
 #endif
 

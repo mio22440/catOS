@@ -12,8 +12,6 @@
 #ifndef EDF_H
 #define EDF_H
 
-#define USE_EDF_SCHED
-
 #include "catos_defs.h"
 #include "catos_config.h"
 

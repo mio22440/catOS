@@ -21,12 +21,17 @@
 #include "catos_config.h"
 
 #include "strategy.h"
-#include "edf.h"
+
+ #if (USE_EDF_SCHED == 1)
+    #include "edf.h"
+#endif
 
 #define CATOS_TASK_STATE_RDY        0               //目前不具备判断功能
 #define CATOS_TASK_STATE_DESTROYED  (1 << 1)        //删除
 #define CATOS_TASK_STATE_DELAYED    (1 << 2)        //延时
 #define CATOS_TASK_STATE_SUSPEND    (1 << 3)        //挂起
+
+#define CATOS_TASK_STATE_EDFWAIT    (1 << 4)        //EDF等待下一次到达
 
 #define CATOS_TASK_EVENT_MASK       (0xff << 16)    //高16位用作事件相关的状态
 
@@ -76,7 +81,7 @@ struct _cat_TCB_t
 
     uint32_t            sched_strategy;                 /**< 调度策略*/
 
- #ifdef USE_EDF_SCHED
+ #if (USE_EDF_SCHED == 1)
     /** EDF 相关 */
     void                (*user_func)(void *);           /**< 用户函数*/
     uint32_t            period;                         /**< 周期*/

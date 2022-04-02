@@ -60,6 +60,8 @@ void cat_start_first(void)
 //触发pendsv中断进行任务切换，pendsv中断处理函数定义在汇编port.s中
 void cat_task_switch(void)
 {
+    static uint32_t cat_task_switch_times = 0;
+    cat_task_switch_times++;
     MEM32(NVIC_INT_CTRL)    = NVIC_PENDSVSET;//pendsv的优先级在开始第一个任务时已经设置
 }
 
