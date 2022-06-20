@@ -33,6 +33,7 @@ int32_t cat_strcmp(const uint8_t *str1, const uint8_t *str2);
  */
 int32_t *cat_strcpy(uint8_t *dest, const uint8_t *src, uint32_t dest_len);
 
+
 /**
  * @brief 字符串转有符号32
  * @param dest 
@@ -48,6 +49,25 @@ int32_t cat_atoi(int32_t *dest, const uint8_t *src);
  * @return int32_t 0:成功，else:失败
  */
 int32_t cat_itoa(uint8_t *dest, int32_t src);
+
+
+/**
+ * @brief 十六进制转有符号十进制
+ * 
+ * @param dest 
+ * @param src 
+ * @return int32_t 
+ */
+int32_t cat_htoi(int32_t *dest, const uint8_t *src);
+
+/**
+ * @brief 十进制转十六进制字符串
+ * 
+ * @param dest 
+ * @param src 
+ * @return int32_t 
+ */
+int32_t cat_itoh(uint8_t *dest, int32_t src);
 
 
 

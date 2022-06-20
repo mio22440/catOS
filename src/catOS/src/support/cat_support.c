@@ -141,3 +141,99 @@ int32_t cat_itoa(uint8_t *dest, int32_t src)
 	return ret;
 }
 
+/**
+ * @brief 十六进制转无符号十进制
+ * 
+ * @param dest 
+ * @param src 
+ * @return int32_t 
+ */
+int32_t cat_htoi(uint32_t *dest, const uint8_t *src)
+{
+    CAT_ASSERT(dest);
+    CAT_ASSERT(src);
+
+    int32_t ret = 0;
+    uint32_t temp = 0;
+
+    //0x12
+    if(
+        (src[0] != '0') ||
+        ((src[1] != 'x') && (src[1] != 'X'))
+    )
+    {
+        ret = -1;
+    }
+    else
+    {
+        src += 2; //跳过0x
+        while('\0' != *src)
+        {
+            if((*src >= '0') && (*src <= '9'))
+            {
+                temp = temp * 16 + (*src - '0');
+                src++;
+            }
+            else if((*src >= 'A') && (*src <= 'F'))
+            {
+                temp = temp * 16 + (*src - 'A' + 10);
+                src++;
+            }
+            else if((*src >= 'a') && (*src <= 'f'))
+            {
+                temp = temp * 16 + (*src - 'a' + 10);
+                src++;
+            }
+            else
+            {
+                ret = -1;
+                break;
+            }
+        } /* while */
+    } /* else */
+
+    if(0 == ret)
+    {
+        *dest = temp;
+    }
+
+    return ret;
+}
+
+/**
+ * @brief 十进制转十六进制字符串
+ * 
+ * @param dest 
+ * @param src 
+ * @return int32_t 
+ */
+int32_t cat_itoh(uint8_t *dest, uint32_t src)
+{
+    CAT_ASSERT(dest);
+
+    int32_t ret = 0;
+    uint32_t temp = 0;
+
+    *(dest++) = '0';
+    *(dest++) = 'x';
+
+    while(src != 0)
+    {
+        temp = src % 16;
+        src /= 16;
+        if(temp < 10)
+        {
+            *dest = temp + '0';
+        }
+        else
+        {
+            *dest = temp - 10 + 'A';
+        }
+        
+        dest++;
+    }
+
+    *dest = '\0';
+
+    return ret;
+}
