@@ -109,6 +109,8 @@ struct _task_info_t
     uint32_t            *stack_start_addr;              /**< 堆栈起始地址*/
     uint32_t            stack_size;
     uint32_t            free_stack_size;
+
+    uint32_t            sched_strategy;                 /**< 调度策略*/
 };
 
 //事件的结果

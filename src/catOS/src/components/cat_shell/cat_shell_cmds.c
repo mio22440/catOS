@@ -89,6 +89,7 @@ void *do_help(void *arg)
 }
 CAT_DECLARE_CMD(help, print help msg, do_help);
 
+#if 0
 void *do_test_cmd(void *arg)
 {
     (void)arg;
@@ -106,6 +107,7 @@ void *do_cmd2(void *arg)
     return NULL;
 }
 CAT_DECLARE_CMD(cmd2, for test, do_cmd2);
+#endif
 
 void *do_test_args(void *arg)
 {
@@ -130,6 +132,7 @@ void *do_test_args(void *arg)
 }
 CAT_DECLARE_CMD(test_args, test args, do_test_args);
 
+#if 0
 void *do_test_atoi(void *arg)
 {
     CAT_ASSERT(arg);
@@ -152,6 +155,7 @@ void *do_test_atoi(void *arg)
 		return NULL;
 }
 CAT_DECLARE_CMD(test_atoi, test atoi, do_test_atoi);
+#endif
 
 void *do_clear(void *arg)
 {

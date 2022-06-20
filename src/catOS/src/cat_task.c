@@ -363,6 +363,8 @@ void cat_task_get_info(struct _cat_TCB_t *task, struct _task_info_t *info)
     info->stack_top        = task->stack_top;
     info->stack_size       = task->stack_size;
 
+    info->sched_strategy   = task->sched_strategy;
+
     cat_task_exit_critical(status);
 
     info->free_stack_size = 0;//初始化空闲堆栈长度
@@ -392,14 +394,15 @@ void *do_task_stat(void *arg)
     struct _task_info_t tmp_info = {0};
     uint32_t i = 0;
 
-    CAT_SYS_PRINTF("no\tname\t\tsched\tdelay\tprio\tstate\tstack\r\n");
+    CAT_SYS_PRINTF("no\tname\t\tstrategy\tsched\tdelay\tprio\tstate\tstack\r\n");
 
     for(i=0; i<cat_task_num; i++)
     {
         cat_task_get_info(cat_task_stat_list[i], &tmp_info);
-        CAT_SYS_PRINTF("%d:\t%s\t%d\t%d\t%d\t%d\t%d/%d\r\n", 
+        CAT_SYS_PRINTF("%d:\t%s\t%d\t\t%d\t%d\t%d\t%d\t%d/%d\r\n", 
             i,
             tmp_info.task_name,
+            tmp_info.sched_strategy,
             tmp_info.sched_times,
             tmp_info.task_delay,
             tmp_info.prio,
