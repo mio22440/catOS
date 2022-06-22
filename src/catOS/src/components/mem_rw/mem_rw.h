@@ -14,7 +14,7 @@
 
 #include "catos_defs.h"
 
-uint8_t get_reg(uint32_t addr, uint32_t *val);
-uint8_t set_reg(uint32_t addr, uint32_t  val);
+uint8_t get_reg(uint32_t *addr, uint32_t *val);
+uint8_t set_reg(uint32_t *addr, uint32_t  val);
 
 #endif

@@ -58,7 +58,7 @@ int32_t cat_itoa(uint8_t *dest, int32_t src);
  * @param src 
  * @return int32_t 
  */
-int32_t cat_htoi(int32_t *dest, const uint8_t *src);
+int32_t cat_htoi(uint32_t *dest, const uint8_t *src);
 
 /**
  * @brief 十进制转十六进制字符串
@@ -67,7 +67,7 @@ int32_t cat_htoi(int32_t *dest, const uint8_t *src);
  * @param src 
  * @return int32_t 
  */
-int32_t cat_itoh(uint8_t *dest, int32_t src);
+int32_t cat_itoh(uint8_t *dest, uint32_t src);
 
 
 

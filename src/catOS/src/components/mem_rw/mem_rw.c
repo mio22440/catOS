@@ -20,7 +20,7 @@
 
 
 /* public func defs*/
-uint8_t get_reg(uint32_t addr, uint32_t *val)
+uint8_t get_reg(uint32_t *addr, uint32_t *val)
 {
     CAT_ASSERT(val);
 
@@ -31,7 +31,7 @@ uint8_t get_reg(uint32_t addr, uint32_t *val)
     return ret;
 }
 
-uint8_t set_reg(uint32_t addr, uint32_t  val)
+uint8_t set_reg(uint32_t *addr, uint32_t  val)
 {
     uint8_t ret = 0;
 
@@ -48,7 +48,7 @@ void *do_getreg(void *arg)
 
     uint32_t reg_addr;
     uint32_t reg_val_dec;
-    uint8_t reg_val_hex[7];
+    uint8_t reg_val_hex[11];
 
     int32_t ret = 0;
 
@@ -60,7 +60,7 @@ void *do_getreg(void *arg)
     else
     {
         /* 从buffer获取十六进制地址字符串并转换为整型 */
-        ret = cat_htoi(*reg_addr, inst->buffer.args[0]);
+        ret = cat_htoi(&reg_addr, inst->buffer.args[0]);
 
         /* 调用get_reg函数获取十进制值 */
         ret = get_reg(reg_addr, &reg_val_dec);
@@ -75,7 +75,7 @@ void *do_getreg(void *arg)
         }
     }
 
-    CAT_SYS_PRINTF("*(%s)=%s", , reg_val_hex);
+    CAT_SYS_PRINTF("*(%s)=%s\r\n" ,inst->buffer.args[0], reg_val_hex);
 
     return NULL;
 }
@@ -99,8 +99,8 @@ void *do_setreg(void *arg)
     else
     {
         /* 从buffer获取十六进制地址字符串和十六进制待写入值h的字符串并转换为整型 */
-        ret = cat_htoi(*reg_addr, inst->buffer.args[0]);
-        ret = cat_htoi(*val_want_set, inst->buffer.args[1]);
+        ret = cat_htoi(&reg_addr, inst->buffer.args[0]);
+        ret = cat_htoi(&val_want_set, inst->buffer.args[1]);
 
         /* 调用set_reg函数写入 */
         ret = set_reg(reg_addr, val_want_set);
@@ -110,7 +110,7 @@ void *do_setreg(void *arg)
         }
     }
 
-    CAT_SYS_PRINTF("[set_reg] written");
+    CAT_SYS_PRINTF("[set_reg] written\r\n");
 
     return NULL;
 }

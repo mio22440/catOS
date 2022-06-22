@@ -3,6 +3,9 @@
         "catos_defs.h": "c",
         "strategy.h": "c",
         "catos_config.h": "c",
-        "cat_error.h": "c"
+        "cat_error.h": "c",
+        "catos_declares.h": "c",
+        "mem_rw.h": "c",
+        "cat_support.h": "c"
     }
 }
